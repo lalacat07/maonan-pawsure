@@ -1,0 +1,32 @@
+<view class="big">{{p.icon}}</view>
+
+<view class="sec">
+  <text class="tag">对症·{{p.tag}}</text>
+  <view class="d-name">{{p.name}}</view>
+  <view class="d-meta">{{p.desc}} · ⭐4.8（326条测评）</view>
+
+  <!-- 成分透明表 -->
+  <view class="ing">
+    <view class="ing-h">🔬 成分透明表（100%公示）</view>
+    <view class="ing-row" wx:for="{{p.ing}}" wx:key="index">
+      <text>{{item[0]}}</text><text class="ing-v">{{item[1]}}</text>
+    </view>
+  </view>
+  <view class="report">📋 本批次第三方检测：重金属未检出 · 霉菌毒素合格 · 营养达标 <text class="link">查看报告 ›</text></view>
+
+  <!-- 多平台比价 -->
+  <view class="cmp-title">去哪买更划算？已帮你比好 👇</view>
+  <view class="cmp {{item.isLow?'cmp-low':''}}" wx:for="{{p.platforms}}" wx:key="name"
+        data-idx="{{index}}" bindtap="jump">
+    <view class="cmp-l">
+      <view class="cmp-name">{{item.name}}<text wx:if="{{item.isLow}}" class="low-badge">最低价</text></view>
+      <view class="cmp-type">{{item.type==='jd'?'点击直跳京东小程序':'复制口令后打开对应App'}}</view>
+    </view>
+    <view class="cmp-r">
+      <view class="cmp-price">¥{{item.price}}</view>
+      <view class="cmp-go">去购买 ›</view>
+    </view>
+  </view>
+
+  <view class="note">ℹ️ 价格为示例数据。本站只做选粮推荐与比价，不经手交易，下单在对应平台完成。</view>
+</view>

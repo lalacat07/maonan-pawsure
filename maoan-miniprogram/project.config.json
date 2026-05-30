@@ -1,0 +1,15 @@
+{
+  "description": "毛安 PawSure · 按症状选粮的宠物测评导购小程序",
+  "packOptions": { "ignore": [], "include": [] },
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.0.0",
+  "appid": "touristappid",
+  "projectname": "maoan-miniprogram"
+}

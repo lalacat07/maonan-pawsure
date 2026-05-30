@@ -1,0 +1,13 @@
+.hero{ background:linear-gradient(135deg,#2f7d5b,#235f45); color:#fff; padding:56rpx 32rpx; }
+.hero-title{ font-size:46rpx; font-weight:800; line-height:1.35; white-space:pre-line; margin-bottom:20rpx; }
+.hero-sub{ font-size:26rpx; opacity:.92; line-height:1.6; margin-bottom:32rpx; }
+.hero-btns{ display:flex; gap:20rpx; }
+.trust{ display:flex; gap:40rpx; margin-top:40rpx; }
+.trust-i{ font-size:22rpx; opacity:.9; }
+.trust-i .b{ display:block; font-size:34rpx; font-weight:800; }
+
+.sym-grid{ display:flex; flex-wrap:wrap; justify-content:space-between; }
+.sym{ width:31%; background:#fff; border:2rpx solid #e6e0d6; border-radius:24rpx; padding:28rpx 12rpx; text-align:center; margin-bottom:20rpx; }
+.sym-emoji{ font-size:56rpx; }
+.sym-t{ font-weight:700; font-size:28rpx; margin-top:8rpx; }
+.sym-d{ font-size:20rpx; color:#6b7770; }

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>毛安 PawSure · 按症状选粮 · 成分透明</title>
+<style>
+  :root{
+    --green:#2f7d5b; --green-d:#235f45; --cream:#faf6ef; --ink:#23302a;
+    --gray:#6b7770; --line:#e6e0d6; --amber:#e8a33d; --soft:#eef6f1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--cream);line-height:1.6}
+  a{color:inherit;text-decoration:none;cursor:pointer}
+  img{max-width:100%}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  /* header */
+  header{position:sticky;top:0;z-index:50;background:rgba(250,246,239,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;gap:28px;height:62px}
+  .logo{font-weight:800;font-size:20px;color:var(--green);letter-spacing:.5px}
+  .logo span{color:var(--amber)}
+  .nav a.link{color:var(--gray);font-size:15px;font-weight:500}
+  .nav a.link:hover{color:var(--green)}
+  .nav .spacer{flex:1}
+  .cart-btn{position:relative;background:var(--green);color:#fff;border:none;padding:9px 16px;border-radius:24px;font-size:14px;cursor:pointer;font-weight:600}
+  .cart-count{position:absolute;top:-6px;right:-6px;background:var(--amber);color:#fff;border-radius:50%;width:20px;height:20px;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+  /* page sections */
+  .page{display:none;animation:fade .35s ease}
+  .page.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* hero */
+  .hero{background:linear-gradient(135deg,#2f7d5b,#235f45);color:#fff;padding:64px 0}
+  .hero h1{font-size:40px;line-height:1.25;margin-bottom:16px;font-weight:800}
+  .hero p{font-size:18px;opacity:.92;max-width:540px;margin-bottom:28px}
+  .hero .btn-row{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{display:inline-block;padding:13px 26px;border-radius:28px;font-weight:700;font-size:15px;cursor:pointer;border:none}
+  .btn-amber{background:var(--amber);color:#fff}
+  .btn-ghost{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}
+  .trust-row{display:flex;gap:28px;margin-top:36px;flex-wrap:wrap}
+  .trust-row div{font-size:14px;opacity:.9}
+  .trust-row b{display:block;font-size:24px;font-weight:800}
+
+  /* section title */
+  .sec{padding:54px 0}
+  .sec h2{font-size:28px;font-weight:800;margin-bottom:8px}
+  .sec .sub{color:var(--gray);margin-bottom:28px}
+
+  /* symptom grid */
+  .symptoms{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+  .symptom{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 16px;text-align:center;cursor:pointer;transition:.2s}
+  .symptom:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:0 8px 20px rgba(47,125,91,.12)}
+  .symptom .emoji{font-size:34px}
+  .symptom .t{font-weight:700;margin-top:8px}
+  .symptom .d{font-size:13px;color:var(--gray)}
+
+  /* product grid */
+  .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:.2s;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.08)}
+  .card .thumb{height:160px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:64px}
+  .card .body{padding:16px;flex:1;display:flex;flex-direction:column}
+  .tag{display:inline-block;background:var(--soft);color:var(--green-d);font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px;align-self:flex-start}
+  .card .name{font-weight:700;font-size:16px}
+  .card .desc{font-size:13px;color:var(--gray);margin:4px 0 12px}
+  .card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+  .price{color:var(--amber);font-weight:800;font-size:19px}
+  .price small{color:var(--gray);font-weight:400;font-size:12px;text-decoration:line-through;margin-left:4px}
+  .add{background:var(--green);color:#fff;border:none;border-radius:20px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer}
+
+  /* transparency / 测评 strip */
+  .strip{background:var(--soft);border-radius:20px;padding:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+  .strip .item h4{color:var(--green);font-size:16px;margin-bottom:6px}
+  .strip .item p{font-size:14px;color:var(--gray)}
+
+  /* product detail */
+  .pd{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  .pd .big{height:340px;background:var(--soft);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:140px}
+  .pd h1{font-size:30px;margin-bottom:10px}
+  .pd .meta{color:var(--gray);margin-bottom:18px}
+  .pd .pricebig{font-size:32px;color:var(--amber);font-weight:800;margin-bottom:20px}
+  .ingredient{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:18px 0}
+  .ingredient .h{background:var(--green);color:#fff;padding:10px 16px;font-weight:700;font-size:14px}
+  .ingredient table{width:100%;border-collapse:collapse;font-size:14px}
+  .ingredient td{padding:9px 16px;border-bottom:1px solid var(--line)}
+  .ingredient tr td:last-child{text-align:right;font-weight:700;color:var(--green-d)}
+  .back{color:var(--green);font-size:14px;font-weight:600;margin-bottom:18px;display:inline-block}
+
+  /* reviews */
+  .review{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+  .review .top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .review .av{width:38px;height:38px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:20px}
+  .review .nm{font-weight:700;font-size:14px}
+  .review .st{color:var(--amber);font-size:13px}
+
+  /* cart */
+  .cart-item{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+  .cart-item .ic{font-size:40px;width:60px;text-align:center}
+  .cart-item .info{flex:1}
+  .cart-item .nm{font-weight:700}
+  .cart-item .rm{color:#c0564b;font-size:13px;cursor:pointer}
+  .cart-total{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:8px}
+  .cart-total .row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:15px}
+  .cart-total .grand{font-size:20px;font-weight:800;border-top:1px solid var(--line);padding-top:12px}
+  .empty{text-align:center;padding:60px 0;color:var(--gray)}
+
+  footer{background:var(--green-d);color:#fff;padding:40px 0;margin-top:60px}
+  footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:24px}
+  footer h5{margin-bottom:10px;font-size:15px}
+  footer a{display:block;color:rgba(255,255,255,.8);font-size:14px;margin-bottom:6px}
+  footer .copy{margin-top:24px;opacity:.7;font-size:13px}
+
+  .banner{background:var(--amber);color:#fff;text-align:center;font-size:13px;padding:7px;font-weight:600}
+  @media(max-width:720px){.pd{grid-template-columns:1fr}.hero h1{font-size:30px}.nav a.link{display:none}}
+</style>
+</head>
+<body>
+
+<div class="banner">导购测评站 · 商品跳转外部平台购买 · 主打「按症状选粮 + 成分100%透明」</div>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" onclick="go('home')">毛安<span>·</span>PawSure</a>
+    <a class="link" onclick="go('home')">首页</a>
+    <a class="link" onclick="go('shop')">按症状选购</a>
+    <a class="link" onclick="go('reviews')">成分测评</a>
+    <div class="spacer"></div>
+    <a class="cart-btn" onclick="go('reviews')" style="text-decoration:none">看测评榜单</a>
+  </div>
+</header>
+
+<!-- HOME -->
+<section class="page active" id="home">
+  <div class="hero">
+    <div class="wrap">
+      <h1>不知道给猫狗买什么粮?<br>先告诉我们它的问题。</h1>
+      <p>泪痕、软便、掉毛、挑食……我们按「症状」帮你筛粮，每款都附第三方检测报告和100%成分透明表。我们不卖货，只帮你选对——选好后一键跳转正规平台购买。</p>
+      <div class="btn-row">
+        <button class="btn btn-amber" onclick="go('shop')">按症状找粮 →</button>
+        <button class="btn btn-ghost" onclick="go('reviews')">看成分测评</button>
+      </div>
+      <div class="trust-row">
+        <div><b>100%</b>成分透明公示</div>
+        <div><b>第三方</b>检测报告可查</div>
+        <div><b>多平台</b>比价后再下单</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap sec">
+    <h2>你家毛孩子怎么了?</h2>
+    <p class="sub">选一个最困扰你的问题，我们帮你筛出对症的粮</p>
+    <div class="symptoms" id="symptomGrid"></div>
+  </div>
+
+  <div class="wrap sec" style="padding-top:0">
+    <div class="strip">
+      <div class="item"><h4>🔬 成分100%公示</h4><p>每款粮列出全部原料、占比、产地、营养分析值，拒绝"复合添加剂"这种含糊写法。</p></div>
+      <div class="item"><h4>📋 第三方检测可查</h4><p>每批次附独立实验室报告，重金属、霉菌毒素、营养达标一目了然。</p></div>
+      <div class="item"><h4>🎯 按需求而非品牌</h4><p>不让你在几百个牌子里挑花眼，先解决问题，再推荐产品，一键跳转平台购买。</p></div>
+    </div>
+  </div>
+
+  <div class="wrap sec" style="padding-top:0">
+    <h2>本周热销</h2>
+    <p class="sub">基于真实复购和测评口碑</p>
+    <div class="products" id="homeProducts"></div>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section class="page" id="shop">
+  <div class="wrap sec">
+    <h2 id="shopTitle">全部对症粮</h2>
+    <p class="sub" id="shopSub">点任意一款看成分透明表</p>
+    <div style="margin-bottom:24px" id="filterRow"></div>
+    <div class="products" id="shopProducts"></div>
+  </div>
+</section>
+
+<!-- PRODUCT DETAIL -->
+<section class="page" id="detail">
+  <div class="wrap sec">
+    <a class="back" onclick="go('shop')">← 返回选购</a>
+    <div class="pd" id="detailBody"></div>
+  </div>
+</section>
+
+<!-- REVIEWS / 测评 -->
+<section class="page" id="reviews">
+  <div class="wrap sec">
+    <h2>成分测评 & 真实反馈</h2>
+    <p class="sub">我们自己拆给你看，也让买过的人说话</p>
+    <div class="strip" style="margin-bottom:30px">
+      <div class="item"><h4>📊 本月测评：5款"无谷鲜粮"横评</h4><p>从蛋白来源、碳水占比、水分、添加剂四个维度打分，结论：3款名不副实，2款值得买。</p></div>
+      <div class="item"><h4>⚠️ 避坑：这些标签在骗你</h4><p>"天然""高端""进口配方"都不是法定术语。教你看懂营养成分表才是关键。</p></div>
+    </div>
+    <h2 style="font-size:22px;margin-bottom:18px">买家真实反馈</h2>
+    <div id="reviewList"></div>
+  </div>
+</section>
+
+<!-- CART -->
+<section class="page" id="cart">
+  <div class="wrap sec">
+    <h2>购物车</h2>
+    <p class="sub">演示用 · 结算为示意</p>
+    <div id="cartBody"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h5>毛安 PawSure</h5>
+        <a>按症状选粮的宠物测评导购站</a>
+        <a>成分透明 · 检测可查 · 多平台比价</a>
+      </div>
+      <div><h5>选购</h5><a onclick="go('shop')">按症状选购</a><a onclick="go('reviews')">成分测评</a></div>
+      <div><h5>服务</h5><a>检测报告查询</a><a>多平台比价</a><a>选粮咨询</a></div>
+      <div><h5>关于</h5><a>我们的标准</a><a>联系我们</a></div>
+    </div>
+    <div class="copy">© 2026 毛安 PawSure · 网站原型演示</div>
+  </div>
+</footer>
+
+<script>
+const symptoms=[
+  {id:'tear',emoji:'😿',t:'泪痕',d:'眼周发红/褐色',},
+  {id:'stool',emoji:'💩',t:'软便/拉稀',d:'肠胃敏感'},
+  {id:'fur',emoji:'🐾',t:'掉毛',d:'毛量稀疏暗淡'},
+  {id:'picky',emoji:'🙄',t:'挑食',d:'不爱吃饭'},
+  {id:'weight',emoji:'⚖️',t:'体重管理',d:'过胖/过瘦'},
+  {id:'senior',emoji:'👴',t:'老年护理',d:'关节/肾脏'},
+];
+// platforms: [平台名, 价格, 购买链接]  —— 上线时把 # 换成真实商品链接
+const products=[
+  {id:1,icon:'🥩',tag:'泪痕',sym:'tear',name:'鸭肉梨去泪痕鲜粮',desc:'单一动物蛋白·低致敏',old:158,
+   kw:'去泪痕鸭肉猫粮',img:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80',
+   ing:[['鲜鸭肉','42%'],['梨','6%'],['鹰嘴豆','12%'],['鸭油','—'],['益生菌','添加'],['粗蛋白','≥36%']],
+   plat:[['天猫',128],['京东',132],['拼多多',119]]},
+  {id:2,icon:'🐟',tag:'软便',sym:'stool',name:'低敏三文鱼肠道粮',desc:'添加益生元·呵护肠胃',old:139,
+   kw:'低敏三文鱼肠道猫粮',img:'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&q=80',
+   ing:[['鲜三文鱼','38%'],['南瓜','8%'],['车前子壳','3%'],['益生元FOS','添加'],['粗蛋白','≥34%'],['粗脂肪','≥15%']],
+   plat:[['天猫',115],['京东',118],['拼多多',109]]},
+  {id:3,icon:'🍗',tag:'掉毛',sym:'fur',name:'鸡肉海藻亮毛粮',desc:'Omega-3·美毛固色',old:168,
+   kw:'美毛海藻猫粮',img:'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=600&q=80',
+   ing:[['鲜鸡肉','40%'],['海藻粉','4%'],['亚麻籽','5%'],['鱼油DHA','添加'],['粗蛋白','≥35%'],['Omega-3','1.2%']],
+   plat:[['天猫',135],['京东',139],['拼多多',126]]},
+  {id:4,icon:'🦃',tag:'挑食',sym:'picky',name:'火鸡冻干双拼粮',desc:'85%肉含量·适口性强',old:198,
+   kw:'火鸡冻干双拼猫粮',img:'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&q=80',
+   ing:[['鲜火鸡肉','45%'],['冻干鸡心','8%'],['蔓越莓','3%'],['粗蛋白','≥40%'],['粗脂肪','≥16%'],['碳水','<20%']],
+   plat:[['天猫',158],['京东',162],['拼多多',149]]},
+  {id:5,icon:'🥗',tag:'体重',sym:'weight',name:'低脂轻体控重粮',desc:'高纤维·饱腹低卡',old:145,
+   kw:'低脂控重猫粮',img:'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=600&q=80',
+   ing:[['鲜鸡胸肉','38%'],['豌豆纤维','10%'],['L-肉碱','添加'],['粗蛋白','≥33%'],['粗脂肪','≤9%'],['粗纤维','6%']],
+   plat:[['天猫',118],['京东',122],['拼多多',109]]},
+  {id:6,icon:'🧓',tag:'老年',sym:'senior',name:'7+关节肾护老年粮',desc:'低磷·氨糖软骨素',old:178,
+   kw:'老年猫粮7+关节肾',img:'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=600&q=80',
+   ing:[['鲜鸡肉','36%'],['氨基葡萄糖','添加'],['软骨素','添加'],['磷','≤0.6%'],['粗蛋白','≥30%'],['Omega-3','1.0%']],
+   plat:[['天猫',142],['京东',145],['拼多多',133]]},
+];
+// 给每个商品算最低价
+products.forEach(p=>p.price=Math.min(...p.plat.map(x=>x[1])));
+// 各平台真实在售搜索深链（点击直达对应平台该关键词在售列表）
+function platUrl(platform,kw){
+  const q=encodeURIComponent(kw);
+  if(platform==='京东')   return 'https://search.jd.com/Search?keyword='+q+'&enc=utf-8';
+  if(platform==='天猫')   return 'https://list.tmall.com/search_product.htm?q='+q;
+  if(platform==='拼多多') return 'https://mobile.yangkeduo.com/search_result.html?search_key='+q;
+  return '#';
+}
+const reviews=[
+  {av:'🐱',nm:'橘座麻麻',st:'★★★★★',tx:'橘猫吃了三周泪痕真的淡了，关键是成分表看得明明白白，鸭肉占比42%写得清清楚楚，比之前买的放心太多。'},
+  {av:'🐶',nm:'柴犬团子',st:'★★★★★',tx:'狗狗肠胃敏感，换了肠道粮没再软便。检测报告能查到这点太加分了，第一次知道自己喂的粮重金属是达标的。'},
+  {av:'🐈',nm:'布偶安妮',st:'★★★★☆',tx:'挑食猫居然吃了！冻干双拼香味确实够。就是价格略高，希望多搞订阅优惠。'},
+];
+
+const cart=[];
+
+function renderSymptoms(){
+  document.getElementById('symptomGrid').innerHTML=symptoms.map(s=>
+    `<div class="symptom" onclick="shopBy('${s.id}','${s.t}')">
+       <div class="emoji">${s.emoji}</div><div class="t">${s.t}</div><div class="d">${s.d}</div></div>`).join('');
+}
+function card(p){
+  return `<div class="card" onclick="detail(${p.id})">
+    <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='${p.icon}'"></div>
+    <div class="body"><span class="tag">对症·${p.tag}</span>
+      <div class="name">${p.name}</div><div class="desc">${p.desc}</div>
+      <div class="foot"><div class="price">¥${p.price}<small>¥${p.old}</small></div>
+        <span class="lowtag" style="font-size:12px;color:var(--green)">全网最低·比价 ›</span></div>
+    </div></div>`;
+}
+function renderHome(){
+  document.getElementById('homeProducts').innerHTML=products.slice(0,4).map(card).join('');
+}
+function renderShop(list){
+  document.getElementById('shopProducts').innerHTML=(list||products).map(card).join('');
+  const f=symptoms.map(s=>`<button class="btn" style="background:#fff;border:1px solid var(--line);color:var(--ink);padding:7px 16px;font-size:13px;margin:0 8px 8px 0" onclick="shopBy('${s.id}','${s.t}')">${s.emoji} ${s.t}</button>`).join('')
+   +`<button class="btn" style="background:var(--green);color:#fff;padding:7px 16px;font-size:13px" onclick="shopBy('all','全部')">全部</button>`;
+  document.getElementById('filterRow').innerHTML=f;
+}
+function shopBy(sym,name){
+  go('shop');
+  const list=sym==='all'?products:products.filter(p=>p.sym===sym);
+  document.getElementById('shopTitle').innerText=sym==='all'?'全部对症粮':`「${name}」对症粮`;
+  document.getElementById('shopSub').innerText=`为你筛出 ${list.length} 款 · 点任意一款看成分透明表`;
+  renderShop(list);
+}
+function detail(id){
+  const p=products.find(x=>x.id===id);go('detail');
+  document.getElementById('detailBody').innerHTML=`
+    <div class="big" style="overflow:hidden"><img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:20px" onerror="this.parentNode.innerHTML='${p.icon}';this.parentNode.style.fontSize='140px'"></div>
+    <div>
+      <span class="tag">对症·${p.tag}</span>
+      <h1>${p.name}</h1>
+      <div class="meta">${p.desc} · ⭐4.8（326条测评）</div>
+      <div class="pricebig">¥${p.price} <span style="font-size:16px;color:var(--gray);text-decoration:line-through;font-weight:400">¥${p.old}</span></div>
+      <div class="ingredient">
+        <div class="h">🔬 成分透明表（100%公示）</div>
+        <table>${p.ing.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table>
+      </div>
+      <p style="font-size:14px;color:var(--gray);margin-bottom:18px">📋 本批次第三方检测：重金属未检出 · 霉菌毒素合格 · 营养达标 <a style="color:var(--green);font-weight:600">查看报告 →</a></p>
+      <p style="font-size:15px;font-weight:700;margin-bottom:12px">去哪买更划算? 已帮你比好 👇</p>
+      ${[...p.plat].sort((a,b)=>a[1]-b[1]).map((pl,i)=>{
+        const low=pl[1]===p.price;
+        const color=pl[0]==='京东'?'#e23434':pl[0]==='拼多多'?'#e84b2f':'#ff6a00';
+        return `<a href="${platUrl(pl[0],p.kw)}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;border:2px solid ${low?'var(--green)':'var(--line)'};background:${low?'var(--soft)':'#fff'};border-radius:14px;padding:14px 16px;margin-bottom:10px">
+          <div><span style="font-weight:700;color:${color}">${pl[0]}</span>${low?' <span style="background:var(--green);color:#fff;font-size:11px;padding:2px 8px;border-radius:12px;margin-left:6px">最低价</span>':''}</div>
+          <div style="text-align:right"><span style="color:var(--amber);font-weight:800;font-size:20px">¥${pl[1]}</span> <span style="color:var(--green);font-size:13px">去购买 ›</span></div>
+        </a>`;}).join('')}
+      <p style="font-size:12px;color:var(--gray);margin-top:8px">ℹ️ 价格为示例。本站只做选粮推荐与比价，不经手交易，下单在对应平台完成。</p>
+    </div>`;
+}
+function renderReviews(){
+  document.getElementById('reviewList').innerHTML=reviews.map(r=>
+    `<div class="review"><div class="top"><div class="av">${r.av}</div>
+      <div><div class="nm">${r.nm}</div><div class="st">${r.st}</div></div></div>
+      <p style="font-size:14px;color:#444">${r.tx}</p></div>`).join('');
+}
+function go(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById(p).classList.add('active');
+  if(p==='shop'&&!document.getElementById('shopProducts').innerHTML)renderShop();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+renderSymptoms();renderHome();renderShop();renderReviews();
+// 移除旧购物车页(已改为导购模式)
+var _c=document.getElementById('cart');if(_c)_c.remove();
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<view class="sec">
+  <view class="sec-title">成分测评 & 真实反馈</view>
+  <view class="sec-sub">我们自己拆给你看，也让买过的人说话</view>
+
+  <view class="eval">
+    <view class="eval-h">📊 本月测评：5款"无谷鲜粮"横评</view>
+    <view class="eval-p">从蛋白来源、碳水占比、水分、添加剂四个维度打分，结论：3款名不副实，2款值得买。</view>
+  </view>
+  <view class="eval">
+    <view class="eval-h">⚠️ 避坑：这些标签在骗你</view>
+    <view class="eval-p">"天然""高端""进口配方"都不是法定术语。教你看懂营养成分表才是关键。</view>
+  </view>
+
+  <view class="sec-title" style="font-size:34rpx;margin:32rpx 0 18rpx">买家真实反馈</view>
+  <view class="rv" wx:for="{{reviews}}" wx:key="nm">
+    <view class="rv-top">
+      <view class="rv-av">{{item.av}}</view>
+      <view>
+        <view class="rv-nm">{{item.nm}}</view>
+        <view class="rv-st">{{item.st}}</view>
+      </view>
+    </view>
+    <view class="rv-tx">{{item.tx}}</view>
+  </view>
+</view>

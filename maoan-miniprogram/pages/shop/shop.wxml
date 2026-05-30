@@ -1,0 +1,23 @@
+<view class="sec">
+  <view class="sec-title">{{title}}</view>
+  <view class="sec-sub">{{sub}}</view>
+
+  <scroll-view scroll-x class="filters" enable-flex>
+    <view class="chip {{active==='all'?'on':''}}" data-id="all" data-name="全部" bindtap="onFilter">全部</view>
+    <view class="chip {{active===item.id?'on':''}}" wx:for="{{symptoms}}" wx:key="id"
+          data-id="{{item.id}}" data-name="{{item.t}}" bindtap="onFilter">{{item.emoji}} {{item.t}}</view>
+  </scroll-view>
+
+  <view class="card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+    <view class="thumb">{{item.icon}}</view>
+    <view class="body">
+      <text class="tag">对症·{{item.tag}}</text>
+      <view class="name">{{item.name}}</view>
+      <view class="desc">{{item.desc}}</view>
+      <view class="foot">
+        <view class="price">¥{{item.minPrice}}<text class="old">¥{{item.old}}</text></view>
+        <view class="lowtag">点开比价 ›</view>
+      </view>
+    </view>
+  </view>
+</view>

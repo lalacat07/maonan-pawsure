@@ -1,0 +1,44 @@
+<view class="banner">测评导购小程序 · 多平台比价 · 「按症状选粮 + 成分100%透明」</view>
+
+<view class="hero">
+  <view class="hero-title">不知道给猫狗买什么粮？\n先告诉我们它的问题。</view>
+  <view class="hero-sub">泪痕、软便、掉毛、挑食……我们按「症状」帮你筛粮，每款附第三方检测和100%成分透明表，再帮你比好三个平台的价格。</view>
+  <view class="hero-btns">
+    <view class="btn btn-amber" bindtap="goShop">按症状找粮 →</view>
+    <view class="btn btn-ghost" bindtap="goReviews">看成分测评</view>
+  </view>
+  <view class="trust">
+    <view class="trust-i"><text class="b">100%</text>成分透明</view>
+    <view class="trust-i"><text class="b">第三方</text>检测可查</view>
+    <view class="trust-i"><text class="b">多平台</text>自动比价</view>
+  </view>
+</view>
+
+<view class="sec">
+  <view class="sec-title">你家毛孩子怎么了？</view>
+  <view class="sec-sub">选一个最困扰你的问题，帮你筛出对症的粮</view>
+  <view class="sym-grid">
+    <view class="sym" wx:for="{{symptoms}}" wx:key="id" data-id="{{item.id}}" data-name="{{item.t}}" bindtap="goSymptom">
+      <view class="sym-emoji">{{item.emoji}}</view>
+      <view class="sym-t">{{item.t}}</view>
+      <view class="sym-d">{{item.d}}</view>
+    </view>
+  </view>
+</view>
+
+<view class="sec">
+  <view class="sec-title">本周热门</view>
+  <view class="sec-sub">基于真实复购和测评口碑</view>
+  <view class="card" wx:for="{{hot}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+    <view class="thumb">{{item.icon}}</view>
+    <view class="body">
+      <text class="tag">对症·{{item.tag}}</text>
+      <view class="name">{{item.name}}</view>
+      <view class="desc">{{item.desc}}</view>
+      <view class="foot">
+        <view class="price">¥{{item.minPrice}}<text class="old">¥{{item.old}}</text></view>
+        <view class="lowtag">全网最低 · 共{{item.platforms.length}}个平台</view>
+      </view>
+    </view>
+  </view>
+</view>

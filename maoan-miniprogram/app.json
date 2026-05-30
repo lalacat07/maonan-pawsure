@@ -1,0 +1,27 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/shop/shop",
+    "pages/detail/detail",
+    "pages/reviews/reviews"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#2f7d5b",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "毛安 · 按症状选粮",
+    "backgroundColor": "#faf6ef"
+  },
+  "tabBar": {
+    "color": "#6b7770",
+    "selectedColor": "#2f7d5b",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "首页" },
+      { "pagePath": "pages/shop/shop", "text": "选购" },
+      { "pagePath": "pages/reviews/reviews", "text": "测评" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
