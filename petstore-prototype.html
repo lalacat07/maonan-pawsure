@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>毛安 PawSure · 按症状选粮 · 成分透明</title>
+<title>毛安 PawSure · 按症状选粮 · 成分透明 · 多平台比价</title>
+<meta name="description" content="毛安 PawSure 是按症状选宠物口粮的测评导购站：泪痕、软便、掉毛、挑食、控重、老年护理对症筛粮，每款附第三方检测报告与100%成分透明表，多平台参考比价，不经手交易。">
+<meta name="keywords" content="猫粮,狗粮,按症状选粮,成分透明,第三方检测,泪痕,软便,掉毛,宠物口粮测评,比价">
+<meta property="og:type" content="website">
+<meta property="og:title" content="毛安 PawSure · 按症状选粮 · 成分透明">
+<meta property="og:description" content="按症状帮你筛粮，每款附第三方检测报告和100%成分透明表，多平台参考比价后再下单。">
+<meta property="og:locale" content="zh_CN">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐾%3C/text%3E%3C/svg%3E">
 <style>
   :root{
     --green:#2f7d5b; --green-d:#235f45; --cream:#faf6ef; --ink:#23302a;
@@ -12,6 +19,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--cream);line-height:1.6}
   a{color:inherit;text-decoration:none;cursor:pointer}
+  button{font-family:inherit}
   img{max-width:100%}
   .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 
@@ -21,10 +29,13 @@
   .logo{font-weight:800;font-size:20px;color:var(--green);letter-spacing:.5px}
   .logo span{color:var(--amber)}
   .nav a.link{color:var(--gray);font-size:15px;font-weight:500}
-  .nav a.link:hover{color:var(--green)}
+  .nav a.link:hover,.nav a.link:focus{color:var(--green)}
   .nav .spacer{flex:1}
-  .cart-btn{position:relative;background:var(--green);color:#fff;border:none;padding:9px 16px;border-radius:24px;font-size:14px;cursor:pointer;font-weight:600}
-  .cart-count{position:absolute;top:-6px;right:-6px;background:var(--amber);color:#fff;border-radius:50%;width:20px;height:20px;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .cta-nav{background:var(--green);color:#fff;border:none;padding:9px 16px;border-radius:24px;font-size:14px;cursor:pointer;font-weight:600}
+  .hamburger{display:none;background:none;border:1px solid var(--line);border-radius:10px;width:42px;height:38px;font-size:20px;cursor:pointer;color:var(--ink)}
+  .mobile-menu{display:none;flex-direction:column;background:var(--cream);border-bottom:1px solid var(--line)}
+  .mobile-menu a{padding:14px 20px;border-top:1px solid var(--line);font-weight:600;color:var(--ink)}
+  .mobile-menu.open{display:flex}
 
   /* page sections */
   .page{display:none;animation:fade .35s ease}
@@ -60,60 +71,98 @@
   .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
   .card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:.2s;display:flex;flex-direction:column}
   .card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.08)}
-  .card .thumb{height:160px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:64px}
+  .card .thumb{height:160px;display:flex;align-items:center;justify-content:center}
+  .card .thumb svg{width:100%;height:100%}
   .card .body{padding:16px;flex:1;display:flex;flex-direction:column}
   .tag{display:inline-block;background:var(--soft);color:var(--green-d);font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px;align-self:flex-start}
   .card .name{font-weight:700;font-size:16px}
   .card .desc{font-size:13px;color:var(--gray);margin:4px 0 12px}
+  .card .rate{font-size:12px;color:var(--amber);margin-bottom:10px}
+  .card .rate span{color:var(--gray)}
   .card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
   .price{color:var(--amber);font-weight:800;font-size:19px}
   .price small{color:var(--gray);font-weight:400;font-size:12px;text-decoration:line-through;margin-left:4px}
-  .add{background:var(--green);color:#fff;border:none;border-radius:20px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer}
 
   /* transparency / 测评 strip */
-  .strip{background:var(--soft);border-radius:20px;padding:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+  .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+  .strip.box{background:var(--soft);border-radius:20px;padding:36px}
   .strip .item h4{color:var(--green);font-size:16px;margin-bottom:6px}
   .strip .item p{font-size:14px;color:var(--gray)}
+  .strip .item.clickable{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;cursor:pointer;transition:.2s}
+  .strip .item.clickable:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:0 8px 18px rgba(47,125,91,.1)}
+  .more{color:var(--green);font-weight:700;font-size:13px;margin-top:10px;display:inline-block}
 
   /* product detail */
   .pd{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
-  .pd .big{height:340px;background:var(--soft);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:140px}
+  .pd .big{height:340px;border-radius:20px;overflow:hidden}
+  .pd .big svg{width:100%;height:100%}
   .pd h1{font-size:30px;margin-bottom:10px}
   .pd .meta{color:var(--gray);margin-bottom:18px}
-  .pd .pricebig{font-size:32px;color:var(--amber);font-weight:800;margin-bottom:20px}
-  .ingredient{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:18px 0}
+  .pd .pricebig{font-size:32px;color:var(--amber);font-weight:800;margin-bottom:6px}
+  .ingredient{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:18px 0;background:#fff}
   .ingredient .h{background:var(--green);color:#fff;padding:10px 16px;font-weight:700;font-size:14px}
   .ingredient table{width:100%;border-collapse:collapse;font-size:14px}
   .ingredient td{padding:9px 16px;border-bottom:1px solid var(--line)}
   .ingredient tr td:last-child{text-align:right;font-weight:700;color:var(--green-d)}
-  .back{color:var(--green);font-size:14px;font-weight:600;margin-bottom:18px;display:inline-block}
+  .linkbtn{color:var(--green);font-weight:700;background:none;border:none;cursor:pointer;font-size:inherit;padding:0;text-decoration:underline}
+  .back{color:var(--green);font-size:14px;font-weight:600;margin-bottom:18px;display:inline-block;cursor:pointer}
+  .platrow{display:flex;align-items:center;justify-content:space-between;border-radius:14px;padding:14px 16px;margin-bottom:10px;border:2px solid var(--line);background:#fff}
+  .disclaimer{font-size:12px;color:var(--gray);background:#fbf4e6;border:1px solid #f0e2c4;border-radius:10px;padding:10px 12px;margin-top:14px;line-height:1.5}
 
   /* reviews */
+  .ratebar-wrap{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:24px;display:flex;gap:30px;flex-wrap:wrap;align-items:center}
+  .ratebar-wrap .big{font-size:46px;font-weight:800;color:var(--amber);line-height:1}
+  .ratebar-wrap .stars{color:var(--amber);font-size:14px}
+  .ratebar-wrap .cnt{color:var(--gray);font-size:13px}
+  .bars{flex:1;min-width:240px}
+  .bars .b{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray);margin-bottom:4px}
+  .bars .track{flex:1;height:8px;background:var(--soft);border-radius:6px;overflow:hidden}
+  .bars .fill{height:100%;background:var(--amber)}
   .review{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
   .review .top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
   .review .av{width:38px;height:38px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:20px}
   .review .nm{font-weight:700;font-size:14px}
   .review .st{color:var(--amber);font-size:13px}
+  .review .ver{font-size:11px;color:var(--green);background:var(--soft);padding:1px 8px;border-radius:10px;margin-left:6px}
 
-  /* cart */
-  .cart-item{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
-  .cart-item .ic{font-size:40px;width:60px;text-align:center}
-  .cart-item .info{flex:1}
-  .cart-item .nm{font-weight:700}
-  .cart-item .rm{color:#c0564b;font-size:13px;cursor:pointer}
-  .cart-total{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:8px}
-  .cart-total .row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:15px}
-  .cart-total .grand{font-size:20px;font-weight:800;border-top:1px solid var(--line);padding-top:12px}
-  .empty{text-align:center;padding:60px 0;color:var(--gray)}
+  /* mini program promo */
+  .mp{display:flex;align-items:center;gap:28px;background:linear-gradient(135deg,#2f7d5b,#235f45);color:#fff;border-radius:20px;padding:32px;flex-wrap:wrap}
+  .mp .qr{width:120px;height:120px;background:#fff;border-radius:14px;flex-shrink:0;padding:8px}
+  .mp .qr svg{width:100%;height:100%}
+  .mp h3{font-size:22px;margin-bottom:6px}
+  .mp p{opacity:.92;font-size:14px;max-width:460px}
+
+  /* modal */
+  .overlay{display:none;position:fixed;inset:0;background:rgba(20,30,25,.55);z-index:200;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:18px;max-width:640px;width:100%;padding:28px;position:relative;animation:fade .25s ease}
+  .modal .x{position:absolute;top:14px;right:16px;font-size:24px;color:var(--gray);background:none;border:none;cursor:pointer;line-height:1}
+  .modal h3{font-size:20px;margin-bottom:4px}
+  .report-meta{font-size:13px;color:var(--gray);margin-bottom:16px}
+  .report table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px}
+  .report th{background:var(--green);color:#fff;text-align:left;padding:8px 10px;font-weight:600}
+  .report td{padding:8px 10px;border-bottom:1px solid var(--line)}
+  .report .pass{color:var(--green);font-weight:700}
+  .report .stamp{display:inline-block;border:2px solid var(--green);color:var(--green);font-weight:700;padding:6px 14px;border-radius:8px;transform:rotate(-5deg);font-size:13px}
+  .article h4{color:var(--green);margin:16px 0 6px;font-size:16px}
+  .article p{font-size:14px;color:#444;margin-bottom:10px}
+  .article .rk{font-size:14px;border-bottom:1px solid var(--line);padding:8px 0;display:flex;justify-content:space-between}
 
   footer{background:var(--green-d);color:#fff;padding:40px 0;margin-top:60px}
   footer .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:24px}
   footer h5{margin-bottom:10px;font-size:15px}
-  footer a{display:block;color:rgba(255,255,255,.8);font-size:14px;margin-bottom:6px}
+  footer a{display:block;color:rgba(255,255,255,.8);font-size:14px;margin-bottom:6px;cursor:pointer}
+  footer a:hover{color:#fff}
   footer .copy{margin-top:24px;opacity:.7;font-size:13px}
+  footer .note{margin-top:8px;opacity:.6;font-size:12px;max-width:680px}
 
   .banner{background:var(--amber);color:#fff;text-align:center;font-size:13px;padding:7px;font-weight:600}
-  @media(max-width:720px){.pd{grid-template-columns:1fr}.hero h1{font-size:30px}.nav a.link{display:none}}
+  @media(max-width:720px){
+    .pd{grid-template-columns:1fr}
+    .hero h1{font-size:30px}
+    .nav a.link,.nav .cta-nav{display:none}
+    .hamburger{display:block;margin-left:auto}
+  }
 </style>
 </head>
 <body>
@@ -122,13 +171,20 @@
 
 <header>
   <div class="wrap nav">
-    <a class="logo" onclick="go('home')">毛安<span>·</span>PawSure</a>
-    <a class="link" onclick="go('home')">首页</a>
-    <a class="link" onclick="go('shop')">按症状选购</a>
-    <a class="link" onclick="go('reviews')">成分测评</a>
+    <a class="logo" data-go="home">毛安<span>·</span>PawSure</a>
+    <a class="link" data-go="home">首页</a>
+    <a class="link" data-go="shop">按症状选购</a>
+    <a class="link" data-go="reviews">成分测评</a>
     <div class="spacer"></div>
-    <a class="cart-btn" onclick="go('reviews')" style="text-decoration:none">看测评榜单</a>
+    <a class="cta-nav" data-go="shop">按症状选粮 →</a>
+    <button class="hamburger" id="hamburger" aria-label="菜单" aria-expanded="false">☰</button>
   </div>
+  <nav class="mobile-menu" id="mobileMenu">
+    <a data-go="home">首页</a>
+    <a data-go="shop">按症状选购</a>
+    <a data-go="reviews">成分测评</a>
+    <a data-go="about">关于 / 联系</a>
+  </nav>
 </header>
 
 <!-- HOME -->
@@ -136,15 +192,15 @@
   <div class="hero">
     <div class="wrap">
       <h1>不知道给猫狗买什么粮?<br>先告诉我们它的问题。</h1>
-      <p>泪痕、软便、掉毛、挑食……我们按「症状」帮你筛粮，每款都附第三方检测报告和100%成分透明表。我们不卖货，只帮你选对——选好后一键跳转正规平台购买。</p>
+      <p>泪痕、软便、掉毛、挑食……我们按「症状」帮你筛粮，每款都附第三方检测报告和100%成分透明表。我们不卖货，只帮你选对——选好后跳转正规平台搜同款购买。</p>
       <div class="btn-row">
-        <button class="btn btn-amber" onclick="go('shop')">按症状找粮 →</button>
-        <button class="btn btn-ghost" onclick="go('reviews')">看成分测评</button>
+        <button class="btn btn-amber" data-go="shop">按症状找粮 →</button>
+        <button class="btn btn-ghost" data-go="reviews">看成分测评</button>
       </div>
       <div class="trust-row">
         <div><b>100%</b>成分透明公示</div>
         <div><b>第三方</b>检测报告可查</div>
-        <div><b>多平台</b>比价后再下单</div>
+        <div><b>多平台</b>参考比价后再下单</div>
       </div>
     </div>
   </div>
@@ -156,10 +212,10 @@
   </div>
 
   <div class="wrap sec" style="padding-top:0">
-    <div class="strip">
+    <div class="strip box">
       <div class="item"><h4>🔬 成分100%公示</h4><p>每款粮列出全部原料、占比、产地、营养分析值，拒绝"复合添加剂"这种含糊写法。</p></div>
-      <div class="item"><h4>📋 第三方检测可查</h4><p>每批次附独立实验室报告，重金属、霉菌毒素、营养达标一目了然。</p></div>
-      <div class="item"><h4>🎯 按需求而非品牌</h4><p>不让你在几百个牌子里挑花眼，先解决问题，再推荐产品，一键跳转平台购买。</p></div>
+      <div class="item clickable" id="reportEntry"><h4>📋 第三方检测可查</h4><p>每批次附独立实验室报告，重金属、霉菌毒素、营养达标一目了然。</p><span class="more">查看检测报告样张 →</span></div>
+      <div class="item"><h4>🎯 按需求而非品牌</h4><p>不让你在几百个牌子里挑花眼，先解决问题，再推荐产品，跳转平台搜同款购买。</p></div>
     </div>
   </div>
 
@@ -167,6 +223,16 @@
     <h2>本周热销</h2>
     <p class="sub">基于真实复购和测评口碑</p>
     <div class="products" id="homeProducts"></div>
+  </div>
+
+  <div class="wrap sec" style="padding-top:0">
+    <div class="mp">
+      <div class="qr" id="mpQr"></div>
+      <div>
+        <h3>用「毛安」小程序，随时按症状选粮</h3>
+        <p>微信扫码进入小程序：按症状筛粮、看成分透明表与第三方检测、三平台自动比价，跳转/复制口令去对应平台购买。<br><span style="opacity:.7;font-size:12px">（上线时把此处替换为你的小程序码）</span></p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -183,7 +249,7 @@
 <!-- PRODUCT DETAIL -->
 <section class="page" id="detail">
   <div class="wrap sec">
-    <a class="back" onclick="go('shop')">← 返回选购</a>
+    <a class="back" data-go="shop">← 返回选购</a>
     <div class="pd" id="detailBody"></div>
   </div>
 </section>
@@ -194,20 +260,27 @@
     <h2>成分测评 & 真实反馈</h2>
     <p class="sub">我们自己拆给你看，也让买过的人说话</p>
     <div class="strip" style="margin-bottom:30px">
-      <div class="item"><h4>📊 本月测评：5款"无谷鲜粮"横评</h4><p>从蛋白来源、碳水占比、水分、添加剂四个维度打分，结论：3款名不副实，2款值得买。</p></div>
-      <div class="item"><h4>⚠️ 避坑：这些标签在骗你</h4><p>"天然""高端""进口配方"都不是法定术语。教你看懂营养成分表才是关键。</p></div>
+      <div class="item clickable" data-article="horizontal"><h4>📊 本月测评：5款"无谷鲜粮"横评</h4><p>从蛋白来源、碳水占比、水分、添加剂四个维度打分，结论：3款名不副实，2款值得买。</p><span class="more">阅读全文 →</span></div>
+      <div class="item clickable" data-article="labels"><h4>⚠️ 避坑：这些标签在骗你</h4><p>"天然""高端""进口配方"都不是法定术语。教你看懂营养成分表才是关键。</p><span class="more">阅读全文 →</span></div>
     </div>
     <h2 style="font-size:22px;margin-bottom:18px">买家真实反馈</h2>
+    <div id="rateSummary"></div>
     <div id="reviewList"></div>
   </div>
 </section>
 
-<!-- CART -->
-<section class="page" id="cart">
+<!-- ABOUT -->
+<section class="page" id="about">
   <div class="wrap sec">
-    <h2>购物车</h2>
-    <p class="sub">演示用 · 结算为示意</p>
-    <div id="cartBody"></div>
+    <a class="back" data-go="home">← 返回首页</a>
+    <h2>关于毛安 PawSure</h2>
+    <p class="sub">按症状选粮的宠物测评导购站</p>
+    <div class="strip box" style="margin-bottom:24px">
+      <div class="item"><h4>我们的标准</h4><p>只收录成分100%公示、且能提供独立第三方检测报告的口粮；不收任何品牌"上榜费"。</p></div>
+      <div class="item"><h4>我们怎么赚钱</h4><p>通过平台导购返佣维持运营，返佣不影响排序与评分——排序只看测评分与真实复购。</p></div>
+      <div class="item"><h4>我们不做什么</h4><p>不经手交易、不替代兽医诊断。涉及疾病请先就医，本站只做选粮参考。</p></div>
+    </div>
+    <p style="font-size:15px">合作 / 纠错 / 检测报告核验：<b>contact@pawsure.example</b>（请替换为真实邮箱）</p>
   </div>
 </section>
 
@@ -216,56 +289,88 @@
     <div class="cols">
       <div>
         <h5>毛安 PawSure</h5>
-        <a>按症状选粮的宠物测评导购站</a>
-        <a>成分透明 · 检测可查 · 多平台比价</a>
+        <a data-go="about">按症状选粮的宠物测评导购站</a>
+        <a data-go="about">成分透明 · 检测可查 · 多平台比价</a>
       </div>
-      <div><h5>选购</h5><a onclick="go('shop')">按症状选购</a><a onclick="go('reviews')">成分测评</a></div>
-      <div><h5>服务</h5><a>检测报告查询</a><a>多平台比价</a><a>选粮咨询</a></div>
-      <div><h5>关于</h5><a>我们的标准</a><a>联系我们</a></div>
+      <div><h5>选购</h5><a data-go="shop">按症状选购</a><a data-go="reviews">成分测评</a></div>
+      <div><h5>服务</h5><a id="footReport">检测报告查询</a><a data-go="shop">多平台比价</a><a data-go="about">选粮咨询</a></div>
+      <div><h5>关于</h5><a data-go="about">我们的标准</a><a data-go="about">联系我们</a></div>
     </div>
     <div class="copy">© 2026 毛安 PawSure · 网站原型演示</div>
+    <div class="note">声明：本站为选粮导购与测评信息平台，不经手交易，下单在第三方平台完成。所列价格为人工维护的参考价，可能与平台实时价存在差异，请以平台实际页面为准。本站内容不构成医疗建议，宠物患病请咨询执业兽医。</div>
   </div>
 </footer>
 
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <button class="x" id="modalClose" aria-label="关闭">×</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
 <script>
 const symptoms=[
-  {id:'tear',emoji:'😿',t:'泪痕',d:'眼周发红/褐色',},
+  {id:'tear',emoji:'😿',t:'泪痕',d:'眼周发红/褐色'},
   {id:'stool',emoji:'💩',t:'软便/拉稀',d:'肠胃敏感'},
   {id:'fur',emoji:'🐾',t:'掉毛',d:'毛量稀疏暗淡'},
   {id:'picky',emoji:'🙄',t:'挑食',d:'不爱吃饭'},
   {id:'weight',emoji:'⚖️',t:'体重管理',d:'过胖/过瘦'},
   {id:'senior',emoji:'👴',t:'老年护理',d:'关节/肾脏'},
 ];
-// platforms: [平台名, 价格, 购买链接]  —— 上线时把 # 换成真实商品链接
+// 颜色用于生成内联SVG缩略图，去除所有外链图片依赖（国内/微信内可秒开）
+const palette={tear:['#f6d8a8','#e8a33d'],stool:['#bfe0c9','#2f7d5b'],fur:['#cfe3f2','#5b8fb9'],
+  picky:['#f3cbb6','#d97746'],weight:['#d6ead0','#6fa15a'],senior:['#e4d4ea','#8a6fae']};
+function thumbSVG(p){
+  const c=palette[p.sym]||['#e6e0d6','#888'];
+  return `<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${p.name}">
+    <defs><linearGradient id="g${p.id}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></linearGradient></defs>
+    <rect width="240" height="160" fill="url(#g${p.id})"/>
+    <text x="120" y="92" font-size="64" text-anchor="middle">${p.icon}</text>
+    <text x="120" y="132" font-size="13" fill="#ffffff" font-weight="700" text-anchor="middle" opacity=".9">对症 · ${p.tag}</text>
+  </svg>`;
+}
 const products=[
-  {id:1,icon:'🥩',tag:'泪痕',sym:'tear',name:'鸭肉梨去泪痕鲜粮',desc:'单一动物蛋白·低致敏',old:158,
-   kw:'去泪痕鸭肉猫粮',img:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80',
-   ing:[['鲜鸭肉','42%'],['梨','6%'],['鹰嘴豆','12%'],['鸭油','—'],['益生菌','添加'],['粗蛋白','≥36%']],
+  {id:1,icon:'🥩',tag:'泪痕',sym:'tear',name:'鸭肉梨去泪痕鲜粮',desc:'单一动物蛋白·低致敏',old:158,score:4.8,rev:326,
+   kw:'去泪痕鸭肉猫粮',
+   ing:[['鲜鸭肉','42%'],['梨','6%'],['鹰嘴豆','12%'],['鸭油','3.5%'],['复合益生菌','1.2亿CFU/kg'],['粗蛋白','≥36%']],
    plat:[['天猫',128],['京东',132],['拼多多',119]]},
-  {id:2,icon:'🐟',tag:'软便',sym:'stool',name:'低敏三文鱼肠道粮',desc:'添加益生元·呵护肠胃',old:139,
-   kw:'低敏三文鱼肠道猫粮',img:'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&q=80',
-   ing:[['鲜三文鱼','38%'],['南瓜','8%'],['车前子壳','3%'],['益生元FOS','添加'],['粗蛋白','≥34%'],['粗脂肪','≥15%']],
+  {id:7,icon:'🐰',tag:'泪痕',sym:'tear',name:'兔肉单一蛋白无谷粮',desc:'新型蛋白·适合食物敏感',old:172,score:4.6,rev:158,
+   kw:'兔肉单一蛋白无谷猫粮',
+   ing:[['鲜兔肉','44%'],['木薯','8%'],['南瓜','5%'],['兔脂','3%'],['牛磺酸','1500mg/kg'],['粗蛋白','≥37%']],
+   plat:[['天猫',146],['京东',149],['拼多多',138]]},
+  {id:2,icon:'🐟',tag:'软便',sym:'stool',name:'低敏三文鱼肠道粮',desc:'添加益生元·呵护肠胃',old:139,score:4.7,rev:402,
+   kw:'低敏三文鱼肠道猫粮',
+   ing:[['鲜三文鱼','38%'],['南瓜','8%'],['车前子壳','3%'],['益生元FOS','0.8%'],['粗蛋白','≥34%'],['粗脂肪','≥15%']],
    plat:[['天猫',115],['京东',118],['拼多多',109]]},
-  {id:3,icon:'🍗',tag:'掉毛',sym:'fur',name:'鸡肉海藻亮毛粮',desc:'Omega-3·美毛固色',old:168,
-   kw:'美毛海藻猫粮',img:'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=600&q=80',
-   ing:[['鲜鸡肉','40%'],['海藻粉','4%'],['亚麻籽','5%'],['鱼油DHA','添加'],['粗蛋白','≥35%'],['Omega-3','1.2%']],
+  {id:8,icon:'🐑',tag:'软便',sym:'stool',name:'羊肉鸡蛋温和肠胃粮',desc:'温和易消化·小颗粒',old:135,score:4.5,rev:211,
+   kw:'羊肉鸡蛋肠胃猫粮',
+   ing:[['鲜羊肉','40%'],['全蛋粉','9%'],['燕麦','7%'],['丁酸梭菌','添加'],['粗蛋白','≥35%'],['粗脂肪','≥14%']],
+   plat:[['天猫',122],['京东',125],['拼多多',116]]},
+  {id:3,icon:'🍗',tag:'掉毛',sym:'fur',name:'鸡肉海藻亮毛粮',desc:'Omega-3·美毛固色',old:168,score:4.7,rev:289,
+   kw:'美毛海藻猫粮',
+   ing:[['鲜鸡肉','40%'],['海藻粉','4%'],['亚麻籽','5%'],['鱼油DHA','0.3%'],['粗蛋白','≥35%'],['Omega-3','1.2%']],
    plat:[['天猫',135],['京东',139],['拼多多',126]]},
-  {id:4,icon:'🦃',tag:'挑食',sym:'picky',name:'火鸡冻干双拼粮',desc:'85%肉含量·适口性强',old:198,
-   kw:'火鸡冻干双拼猫粮',img:'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&q=80',
+  {id:9,icon:'🦴',tag:'掉毛',sym:'fur',name:'三文鱼冻干护肤毛粮',desc:'高脂肪·改善皮屑',old:188,score:4.6,rev:174,
+   kw:'三文鱼冻干美毛猫粮',
+   ing:[['鲜三文鱼','41%'],['冻干鱼块','8%'],['卵磷脂','2%'],['维生素E','添加'],['粗蛋白','≥38%'],['Omega-3','1.5%']],
+   plat:[['天猫',152],['京东',156],['拼多多',144]]},
+  {id:4,icon:'🦃',tag:'挑食',sym:'picky',name:'火鸡冻干双拼粮',desc:'85%肉含量·适口性强',old:198,score:4.9,rev:367,
+   kw:'火鸡冻干双拼猫粮',
    ing:[['鲜火鸡肉','45%'],['冻干鸡心','8%'],['蔓越莓','3%'],['粗蛋白','≥40%'],['粗脂肪','≥16%'],['碳水','<20%']],
    plat:[['天猫',158],['京东',162],['拼多多',149]]},
-  {id:5,icon:'🥗',tag:'体重',sym:'weight',name:'低脂轻体控重粮',desc:'高纤维·饱腹低卡',old:145,
-   kw:'低脂控重猫粮',img:'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=600&q=80',
+  {id:5,icon:'🥗',tag:'体重',sym:'weight',name:'低脂轻体控重粮',desc:'高纤维·饱腹低卡',old:145,score:4.5,rev:233,
+   kw:'低脂控重猫粮',
    ing:[['鲜鸡胸肉','38%'],['豌豆纤维','10%'],['L-肉碱','添加'],['粗蛋白','≥33%'],['粗脂肪','≤9%'],['粗纤维','6%']],
    plat:[['天猫',118],['京东',122],['拼多多',109]]},
-  {id:6,icon:'🧓',tag:'老年',sym:'senior',name:'7+关节肾护老年粮',desc:'低磷·氨糖软骨素',old:178,
-   kw:'老年猫粮7+关节肾',img:'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=600&q=80',
-   ing:[['鲜鸡肉','36%'],['氨基葡萄糖','添加'],['软骨素','添加'],['磷','≤0.6%'],['粗蛋白','≥30%'],['Omega-3','1.0%']],
+  {id:6,icon:'🧓',tag:'老年',sym:'senior',name:'7+关节肾护老年粮',desc:'低磷·氨糖软骨素',old:178,score:4.6,rev:198,
+   kw:'老年猫粮7+关节肾',
+   ing:[['鲜鸡肉','36%'],['氨基葡萄糖','1200mg/kg'],['软骨素','800mg/kg'],['磷','≤0.6%'],['粗蛋白','≥30%'],['Omega-3','1.0%']],
    plat:[['天猫',142],['京东',145],['拼多多',133]]},
 ];
-// 给每个商品算最低价
 products.forEach(p=>p.price=Math.min(...p.plat.map(x=>x[1])));
-// 各平台真实在售搜索深链（点击直达对应平台该关键词在售列表）
+
 function platUrl(platform,kw){
   const q=encodeURIComponent(kw);
   if(platform==='京东')   return 'https://search.jd.com/Search?keyword='+q+'&enc=utf-8';
@@ -273,84 +378,198 @@ function platUrl(platform,kw){
   if(platform==='拼多多') return 'https://mobile.yangkeduo.com/search_result.html?search_key='+q;
   return '#';
 }
-const reviews=[
-  {av:'🐱',nm:'橘座麻麻',st:'★★★★★',tx:'橘猫吃了三周泪痕真的淡了，关键是成分表看得明明白白，鸭肉占比42%写得清清楚楚，比之前买的放心太多。'},
-  {av:'🐶',nm:'柴犬团子',st:'★★★★★',tx:'狗狗肠胃敏感，换了肠道粮没再软便。检测报告能查到这点太加分了，第一次知道自己喂的粮重金属是达标的。'},
-  {av:'🐈',nm:'布偶安妮',st:'★★★★☆',tx:'挑食猫居然吃了！冻干双拼香味确实够。就是价格略高，希望多搞订阅优惠。'},
-];
 
-const cart=[];
+const reviews=[
+  {av:'🐱',nm:'橘座麻麻',st:'★★★★★',v:1,tx:'橘猫吃了三周泪痕真的淡了，关键是成分表看得明明白白，鸭肉占比42%写得清清楚楚，比之前买的放心太多。'},
+  {av:'🐶',nm:'柴犬团子',st:'★★★★★',v:1,tx:'狗狗肠胃敏感，换了肠道粮没再软便。检测报告能查到这点太加分了，第一次知道自己喂的粮重金属是达标的。'},
+  {av:'🐈',nm:'布偶安妮',st:'★★★★☆',v:1,tx:'挑食猫居然吃了！冻干双拼香味确实够。就是价格略高，平台间差价有十几块，比价功能帮我省了点。'},
+  {av:'🐾',nm:'两只狸花',st:'★★★☆☆',v:1,tx:'东西没问题，成分也透明。但点"去购买"是跳到平台搜索页不是那一款，自己又找了一会儿。希望能直接定位到商品。'},
+  {av:'🐕',nm:'金毛Coco',st:'★★★★☆',v:0,tx:'美毛粮喂了一个月毛色确实亮了点，掉毛没明显减少，可能还要再观察。整体值这个价。'},
+  {av:'🐈‍⬛',nm:'奶牛猫爸',st:'★★☆☆☆',v:1,tx:'我家这只不吃羊肉这款，换了三文鱼那款才肯吃。选粮还是得看自家猫口味，跟站点无关，但提醒大家先买小包试。'},
+];
+function rateSummary(){
+  const counts=[0,0,0,0,0];
+  reviews.forEach(r=>{const n=(r.st.match(/★/g)||[]).length;counts[5-n]++;});
+  const total=reviews.length;
+  const avg=(reviews.reduce((s,r)=>s+(r.st.match(/★/g)||[]).length,0)/total).toFixed(1);
+  const bars=[5,4,3,2,1].map(star=>{
+    const c=counts[5-star],pct=Math.round(c/total*100);
+    return `<div class="b"><span>${star}★</span><div class="track"><div class="fill" style="width:${pct}%"></div></div><span>${c}</span></div>`;
+  }).join('');
+  return `<div class="ratebar-wrap">
+    <div><div class="big">${avg}</div><div class="stars">★★★★★</div><div class="cnt">共 ${total} 条 · 含中差评</div></div>
+    <div class="bars">${bars}</div></div>`;
+}
+
+// 第三方检测报告样张
+function reportHTML(p){
+  const name=p?p.name:'示例批次';
+  const batch='PS'+(p?p.id:0)+'-2406A';
+  return `<div class="report">
+    <h3>第三方检测报告（样张）</h3>
+    <div class="report-meta">委托样品：${name} · 批次号 ${batch} · 检测机构：谱尼测试集团（示例）· 报告编号 NY-2026-0${(p?p.id:1)}138 · 检测日期 2026-04-18</div>
+    <table>
+      <tr><th>检测项目</th><th>限量标准</th><th>实测值</th><th>判定</th></tr>
+      <tr><td>水分</td><td>≤10%</td><td>7.8%</td><td class="pass">合格</td></tr>
+      <tr><td>粗蛋白</td><td>≥30%</td><td>${p?(p.ing.find(x=>x[0]==='粗蛋白')||['','≥35%'])[1]:'≥35%'}</td><td class="pass">合格</td></tr>
+      <tr><td>铅 (Pb)</td><td>≤5 mg/kg</td><td>未检出</td><td class="pass">合格</td></tr>
+      <tr><td>砷 (As)</td><td>≤2 mg/kg</td><td>0.12 mg/kg</td><td class="pass">合格</td></tr>
+      <tr><td>汞 (Hg)</td><td>≤0.1 mg/kg</td><td>未检出</td><td class="pass">合格</td></tr>
+      <tr><td>黄曲霉毒素B1</td><td>≤10 μg/kg</td><td>＜2 μg/kg</td><td class="pass">合格</td></tr>
+      <tr><td>沙门氏菌</td><td>不得检出</td><td>未检出</td><td class="pass">合格</td></tr>
+    </table>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <span style="font-size:12px;color:var(--gray)">注：本页为演示用样张数据，上线时请替换为实验室出具的真实报告 PDF/扫描件。</span>
+      <span class="stamp">检测合格 ✓</span>
+    </div>
+  </div>`;
+}
+
+// 测评长文
+const articles={
+  horizontal:`<div class="article"><h3>本月测评：5款"无谷鲜粮"横评</h3>
+    <p>市面"无谷鲜粮"鱼龙混杂。我们买回 5 款热门产品，从<b>蛋白来源、碳水占比、水分、添加剂</b>四个维度逐项打分（满分 5 分），并送检第三方实验室复核标称值。</p>
+    <h4>综合评分</h4>
+    <div class="rk"><span>A款 火鸡冻干双拼</span><span>4.7 · 推荐</span></div>
+    <div class="rk"><span>B款 三文鱼肠道粮</span><span>4.4 · 推荐</span></div>
+    <div class="rk"><span>C款 "进口配方"鸡肉粮</span><span>3.2 · 一般</span></div>
+    <div class="rk"><span>D款 网红无谷粮</span><span>2.6 · 不推荐</span></div>
+    <div class="rk"><span>E款 低价无谷粮</span><span>2.1 · 不推荐</span></div>
+    <h4>关键发现</h4>
+    <p>1）3 款"无谷"产品用<b>豌豆蛋白、土豆淀粉</b>冲高蛋白数值，动物蛋白实际占比不足 30%；<br>2）2 款标称粗蛋白与送检实测差 3 个百分点以上；<br>3）越是强调"进口""天然"的，配料表越含糊。结论：<b>A、B 两款值得买，C/D/E 名不副实。</b></p>
+    <p style="font-size:12px;color:var(--gray)">说明：本文为演示内容，上线时请填入真实测评数据与送检报告。</p></div>`,
+  labels:`<div class="article"><h3>避坑：这些标签在骗你</h3>
+    <p>挑粮时最容易被包装词带跑。下面这些词<b>都不是法定术语</b>，没有统一标准，谁都能印：</p>
+    <h4>无意义营销词</h4>
+    <p>「天然 Natural」「高端」「进口配方」「人食级」——均无强制定义，不代表品质或安全。</p>
+    <h4>真正该看的三件事</h4>
+    <p>1）<b>配料表前三位</b>：是否为具名鲜肉/肉粉，而非"肉类及其副产品""谷物"；<br>2）<b>粗蛋白来源</b>：高蛋白若来自豌豆/土豆，对猫狗利用率低；<br>3）<b>第三方检测</b>：重金属、霉菌毒素、菌落是否有独立报告可查。</p>
+    <p>记住一句话：<b>看得懂配料表，比任何宣传语都靠谱。</b></p>
+    <p style="font-size:12px;color:var(--gray)">说明：本文为演示内容，可在后台替换为完整科普长文。</p></div>`
+};
+
+// 微信小程序码占位（演示用图案，非真实可扫码）
+function qrPlaceholder(){
+  let cells='';
+  const seed=[1,0,1,1,0,1,0,1,0,1,1,0,0,1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,1,0,1,0,0,1,1,0];
+  for(let y=0;y<6;y++)for(let x=0;x<6;x++){if(seed[(y*6+x)%seed.length]){cells+=`<rect x="${x*16+4}" y="${y*16+4}" width="14" height="14" rx="3" fill="#235f45"/>`;}}
+  return `<svg viewBox="0 0 104 104" xmlns="http://www.w3.org/2000/svg" aria-label="小程序码占位">
+    <rect width="104" height="104" rx="10" fill="#fff"/>${cells}
+    <circle cx="52" cy="52" r="13" fill="#2f7d5b"/><text x="52" y="58" font-size="14" text-anchor="middle" fill="#fff">🐾</text></svg>`;
+}
 
 function renderSymptoms(){
   document.getElementById('symptomGrid').innerHTML=symptoms.map(s=>
-    `<div class="symptom" onclick="shopBy('${s.id}','${s.t}')">
+    `<div class="symptom" data-sym="${s.id}" data-symname="${s.t}">
        <div class="emoji">${s.emoji}</div><div class="t">${s.t}</div><div class="d">${s.d}</div></div>`).join('');
 }
 function card(p){
-  return `<div class="card" onclick="detail(${p.id})">
-    <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='${p.icon}'"></div>
+  return `<div class="card" data-detail="${p.id}">
+    <div class="thumb">${thumbSVG(p)}</div>
     <div class="body"><span class="tag">对症·${p.tag}</span>
       <div class="name">${p.name}</div><div class="desc">${p.desc}</div>
+      <div class="rate">${'★'.repeat(Math.round(p.score))}<span> ${p.score} · ${p.rev}条</span></div>
       <div class="foot"><div class="price">¥${p.price}<small>¥${p.old}</small></div>
-        <span class="lowtag" style="font-size:12px;color:var(--green)">全网最低·比价 ›</span></div>
+        <span style="font-size:12px;color:var(--green)">参考价·比价 ›</span></div>
     </div></div>`;
 }
 function renderHome(){
-  document.getElementById('homeProducts').innerHTML=products.slice(0,4).map(card).join('');
+  document.getElementById('homeProducts').innerHTML=products.filter((p,i)=>[1,4,2,3].includes(p.id)).map(card).join('');
+  document.getElementById('mpQr').innerHTML=qrPlaceholder();
 }
 function renderShop(list){
   document.getElementById('shopProducts').innerHTML=(list||products).map(card).join('');
-  const f=symptoms.map(s=>`<button class="btn" style="background:#fff;border:1px solid var(--line);color:var(--ink);padding:7px 16px;font-size:13px;margin:0 8px 8px 0" onclick="shopBy('${s.id}','${s.t}')">${s.emoji} ${s.t}</button>`).join('')
-   +`<button class="btn" style="background:var(--green);color:#fff;padding:7px 16px;font-size:13px" onclick="shopBy('all','全部')">全部</button>`;
+  const f=symptoms.map(s=>`<button class="btn fbtn" style="background:#fff;border:1px solid var(--line);color:var(--ink);padding:7px 16px;font-size:13px;margin:0 8px 8px 0" data-sym="${s.id}" data-symname="${s.t}">${s.emoji} ${s.t}</button>`).join('')
+   +`<button class="btn fbtn" style="background:var(--green);color:#fff;padding:7px 16px;font-size:13px" data-sym="all" data-symname="全部">全部</button>`;
   document.getElementById('filterRow').innerHTML=f;
 }
 function shopBy(sym,name){
-  go('shop');
   const list=sym==='all'?products:products.filter(p=>p.sym===sym);
-  document.getElementById('shopTitle').innerText=sym==='all'?'全部对症粮':`「${name}」对症粮`;
-  document.getElementById('shopSub').innerText=`为你筛出 ${list.length} 款 · 点任意一款看成分透明表`;
+  document.getElementById('shopTitle').textContent=sym==='all'?'全部对症粮':`「${name}」对症粮`;
+  document.getElementById('shopSub').textContent=`为你筛出 ${list.length} 款 · 点任意一款看成分透明表`;
   renderShop(list);
 }
-function detail(id){
-  const p=products.find(x=>x.id===id);go('detail');
+function renderDetail(id){
+  const p=products.find(x=>x.id===id);if(!p)return;
   document.getElementById('detailBody').innerHTML=`
-    <div class="big" style="overflow:hidden"><img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:20px" onerror="this.parentNode.innerHTML='${p.icon}';this.parentNode.style.fontSize='140px'"></div>
+    <div class="big">${thumbSVG(p)}</div>
     <div>
       <span class="tag">对症·${p.tag}</span>
       <h1>${p.name}</h1>
-      <div class="meta">${p.desc} · ⭐4.8（326条测评）</div>
+      <div class="meta">${p.desc} · ⭐${p.score}（${p.rev}条测评）</div>
       <div class="pricebig">¥${p.price} <span style="font-size:16px;color:var(--gray);text-decoration:line-through;font-weight:400">¥${p.old}</span></div>
+      <div style="font-size:12px;color:var(--gray);margin-bottom:14px">价格为人工维护参考价 · 更新于 2026-05-28</div>
       <div class="ingredient">
         <div class="h">🔬 成分透明表（100%公示）</div>
         <table>${p.ing.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table>
       </div>
-      <p style="font-size:14px;color:var(--gray);margin-bottom:18px">📋 本批次第三方检测：重金属未检出 · 霉菌毒素合格 · 营养达标 <a style="color:var(--green);font-weight:600">查看报告 →</a></p>
-      <p style="font-size:15px;font-weight:700;margin-bottom:12px">去哪买更划算? 已帮你比好 👇</p>
-      ${[...p.plat].sort((a,b)=>a[1]-b[1]).map((pl,i)=>{
+      <p style="font-size:14px;color:var(--gray);margin-bottom:18px">📋 本批次第三方检测：重金属未检出 · 霉菌毒素合格 · 营养达标 <button class="linkbtn" data-report="${p.id}">查看报告 →</button></p>
+      <p style="font-size:15px;font-weight:700;margin-bottom:6px">去哪买更划算? 已帮你比好参考价 👇</p>
+      <p style="font-size:12px;color:var(--gray);margin-bottom:12px">点击跳转对应平台搜索同款，请认准商品名与配料表下单。</p>
+      ${[...p.plat].sort((a,b)=>a[1]-b[1]).map((pl)=>{
         const low=pl[1]===p.price;
         const color=pl[0]==='京东'?'#e23434':pl[0]==='拼多多'?'#e84b2f':'#ff6a00';
-        return `<a href="${platUrl(pl[0],p.kw)}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;border:2px solid ${low?'var(--green)':'var(--line)'};background:${low?'var(--soft)':'#fff'};border-radius:14px;padding:14px 16px;margin-bottom:10px">
-          <div><span style="font-weight:700;color:${color}">${pl[0]}</span>${low?' <span style="background:var(--green);color:#fff;font-size:11px;padding:2px 8px;border-radius:12px;margin-left:6px">最低价</span>':''}</div>
-          <div style="text-align:right"><span style="color:var(--amber);font-weight:800;font-size:20px">¥${pl[1]}</span> <span style="color:var(--green);font-size:13px">去购买 ›</span></div>
+        return `<a class="platrow" href="${platUrl(pl[0],p.kw)}" target="_blank" rel="noopener" style="border-color:${low?'var(--green)':'var(--line)'};background:${low?'var(--soft)':'#fff'}">
+          <div><span style="font-weight:700;color:${color}">${pl[0]}</span>${low?' <span style="background:var(--green);color:#fff;font-size:11px;padding:2px 8px;border-radius:12px;margin-left:6px">参考最低</span>':''}</div>
+          <div style="text-align:right"><span style="color:var(--amber);font-weight:800;font-size:20px">¥${pl[1]}</span> <span style="color:var(--green);font-size:13px">去平台搜同款 ›</span></div>
         </a>`;}).join('')}
-      <p style="font-size:12px;color:var(--gray);margin-top:8px">ℹ️ 价格为示例。本站只做选粮推荐与比价，不经手交易，下单在对应平台完成。</p>
+      <div class="disclaimer">ℹ️ 本站只做选粮推荐与参考比价，<b>不经手交易</b>，下单在对应平台完成；所列为参考价，可能与平台实时价不同。本内容<b>不构成医疗建议</b>，宠物患病请先咨询执业兽医。</div>
     </div>`;
 }
 function renderReviews(){
+  document.getElementById('rateSummary').innerHTML=rateSummary();
   document.getElementById('reviewList').innerHTML=reviews.map(r=>
     `<div class="review"><div class="top"><div class="av">${r.av}</div>
-      <div><div class="nm">${r.nm}</div><div class="st">${r.st}</div></div></div>
+      <div><div class="nm">${r.nm}${r.v?'<span class="ver">已购买</span>':''}</div><div class="st">${r.st}</div></div></div>
       <p style="font-size:14px;color:#444">${r.tx}</p></div>`).join('');
 }
-function go(p){
+
+/* ---------- 弹窗 ---------- */
+const overlay=document.getElementById('overlay');
+function openModal(html){document.getElementById('modalBody').innerHTML=html;overlay.classList.add('open');}
+function closeModal(){overlay.classList.remove('open');}
+document.getElementById('modalClose').onclick=closeModal;
+overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+/* ---------- 移动端菜单 ---------- */
+const ham=document.getElementById('hamburger'),mm=document.getElementById('mobileMenu');
+ham.onclick=()=>{const open=mm.classList.toggle('open');ham.setAttribute('aria-expanded',open);};
+
+/* ---------- 路由 ---------- */
+function showPage(id){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.getElementById(p).classList.add('active');
-  if(p==='shop'&&!document.getElementById('shopProducts').innerHTML)renderShop();
+  const el=document.getElementById(id)||document.getElementById('home');
+  el.classList.add('active');
+}
+function go(hash){location.hash=hash;}
+function router(){
+  mm.classList.remove('open');ham.setAttribute('aria-expanded',false);
+  const h=(location.hash||'#/home').replace(/^#\/?/,'');
+  const [page,arg]=h.split('/');
+  if(page==='shop'){showPage('shop');shopBy(arg||'all',(symptoms.find(s=>s.id===arg)||{}).t||'全部');}
+  else if(page==='detail'){renderDetail(parseInt(arg,10));showPage('detail');}
+  else if(['home','reviews','about'].includes(page)){showPage(page);}
+  else{showPage('home');}
   window.scrollTo({top:0,behavior:'smooth'});
 }
+window.addEventListener('hashchange',router);
+
+/* ---------- 事件委托 ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-go],[data-sym],[data-detail],[data-report],[data-article],#reportEntry,#footReport');
+  if(!t)return;
+  if(t.hasAttribute('data-go')){go(t.getAttribute('data-go'));}
+  else if(t.hasAttribute('data-detail')){go('detail/'+t.getAttribute('data-detail'));}
+  else if(t.hasAttribute('data-sym')){go(t.getAttribute('data-sym')==='all'?'shop':'shop/'+t.getAttribute('data-sym'));}
+  else if(t.hasAttribute('data-report')){openModal(reportHTML(products.find(p=>p.id===parseInt(t.getAttribute('data-report'),10))));}
+  else if(t.hasAttribute('data-article')){openModal(articles[t.getAttribute('data-article')]);}
+  else if(t.id==='reportEntry'||t.id==='footReport'){openModal(reportHTML(products[0]));}
+});
+
+/* ---------- init ---------- */
 renderSymptoms();renderHome();renderShop();renderReviews();
-// 移除旧购物车页(已改为导购模式)
-var _c=document.getElementById('cart');if(_c)_c.remove();
+router();
 </script>
 </body>
 </html>
